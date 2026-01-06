@@ -1,43 +1,34 @@
-name: Flutter Build Android & iOS
+name: Flutter iOS Build
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [main]       # otomatis jalan saat push ke main
+  workflow_dispatch:        # bisa dijalankan manual
 
 jobs:
-  build-android:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.13.0"
-      - run: flutter pub get
-      - run: flutter build apk --release --target-platform android-arm,android-arm64
-      - run: flutter build appbundle --release --target-platform android-arm,android-arm64
-      - uses: actions/upload-artifact@v3
-        with:
-          name: android-build
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-
   build-ios:
-    runs-on: macos-latest
-    needs: build-android   # Opsional: tunggu Android selesai dulu
+    runs-on: macos-latest   # wajib macOS
 
     steps:
+      # 1. Checkout kode
       - uses: actions/checkout@v3
+
+      # 2. Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.13.0"
+
+      # 3. Install dependencies
       - run: flutter pub get
+
+      # 4. Build iOS app
       - run: flutter build ios --release
+
+      # 5. Build IPA untuk TestFlight / App Store
       - run: flutter build ipa
+
+      # 6. Upload IPA sebagai artifact
       - uses: actions/upload-artifact@v3
         with:
           name: ios-build
