@@ -3,32 +3,28 @@ name: Flutter iOS Build
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:   # bisa juga dijalankan manual
 
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-latest  # penting! macOS runner
 
     steps:
-      # 1. Checkout kode
       - uses: actions/checkout@v3
 
-      # 2. Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.13.0"
 
-      # 3. Install dependencies
       - run: flutter pub get
 
-      # 4. Build iOS app
-      - run: flutter build ios --release
+      - name: Build iOS app
+        run: flutter build ios --release
 
-      # 5. Build IPA
-      - run: flutter build ipa
+      - name: Build IPA
+        run: flutter build ipa
 
-      # 6. Upload IPA sebagai artifact (pakai v4)
       - uses: actions/upload-artifact@v4
         with:
           name: ios-build
