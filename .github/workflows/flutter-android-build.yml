@@ -2,12 +2,12 @@ name: Flutter iOS Build
 
 on:
   push:
-    branches: [main]       # otomatis jalan saat push ke main
-  workflow_dispatch:        # bisa dijalankan manual
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build-ios:
-    runs-on: macos-latest   # wajib macOS
+    runs-on: macos-latest
 
     steps:
       # 1. Checkout kode
@@ -25,11 +25,11 @@ jobs:
       # 4. Build iOS app
       - run: flutter build ios --release
 
-      # 5. Build IPA untuk TestFlight / App Store
+      # 5. Build IPA
       - run: flutter build ipa
 
-      # 6. Upload IPA sebagai artifact
-      - uses: actions/upload-artifact@v3
+      # 6. Upload IPA sebagai artifact (pakai v4)
+      - uses: actions/upload-artifact@v4
         with:
           name: ios-build
           path: build/ios/ipa/*.ipa
