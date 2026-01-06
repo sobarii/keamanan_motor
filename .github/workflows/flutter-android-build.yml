@@ -10,32 +10,32 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # Checkout kode
+      # 1. Checkout kode
       - uses: actions/checkout@v3
 
-      # Setup Flutter versi terbaru
+      # 2. Setup Flutter terbaru (Dart juga terbaru)
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.13.0"  # versi Flutter terbaru → Dart juga terbaru
+          flutter-version: "3.13.0"   # pastikan ini >= 3.13, Dart ≥ 3.10
 
-      # Disable analytics supaya log lebih bersih
+      # 3. Disable analytics supaya log bersih (opsional)
       - run: flutter config --no-analytics
 
-      # Install dependency
-      - name: Get Flutter packages
-        run: flutter pub get
+      # 4. Install dependencies
+      - run: flutter pub get
 
-      # Build iOS release
-      - name: Build iOS app
-        run: flutter build ios --release
+      # 5. Build iOS release
+      - run: flutter build ios --release
 
-      # Build IPA untuk TestFlight / App Store
-      - name: Build IPA
-        run: flutter build ipa
+      # 6. Build IPA untuk TestFlight / App Store
+      - run: flutter build ipa
 
-      # Upload IPA ke artifact GitHub (pakai v4)
+      # 7. Upload IPA sebagai artifact
       - uses: actions/upload-artifact@v4
         with:
           name: ios-build
           path: build/ios/ipa/*.ipa
+
+      # 8. Debug versi Flutter & Dart
+      - run: flutter --version
