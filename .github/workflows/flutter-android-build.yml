@@ -3,11 +3,11 @@ name: Flutter iOS Build
 on:
   push:
     branches: [main]
-  workflow_dispatch:   # bisa juga dijalankan manual
+  workflow_dispatch:
 
 jobs:
   build-ios:
-    runs-on: macos-latest  # penting! macOS runner
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -15,9 +15,10 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.13.0"
+          flutter-version: "3.13.0"  # Pastikan Flutter terbaru
 
-      - run: flutter pub get
+      - name: Get Flutter packages
+        run: flutter pub get
 
       - name: Build iOS app
         run: flutter build ios --release
