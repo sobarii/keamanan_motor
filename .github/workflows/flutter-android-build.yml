@@ -17,25 +17,25 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.13.0"   # pastikan ini >= 3.13, Dart juga baru
+          flutter-version: "3.13.0"   # Penting! Flutter terbaru → Dart 3.10+
 
-      # 3. Disable analytics (opsional)
+      # 3. Optional: disable analytics supaya log bersih
       - run: flutter config --no-analytics
 
-      # 4. Install dependencies
-      - name: Get Flutter packages
-        run: flutter pub get
+      # 4. Install dependency
+      - run: flutter pub get
 
       # 5. Build iOS release
-      - name: Build iOS app
-        run: flutter build ios --release
+      - run: flutter build ios --release
 
       # 6. Build IPA
-      - name: Build IPA
-        run: flutter build ipa
+      - run: flutter build ipa
 
       # 7. Upload IPA sebagai artifact
       - uses: actions/upload-artifact@v4
         with:
           name: ios-build
           path: build/ios/ipa/*.ipa
+
+      # 8. Debug versi Flutter/Dart
+      - run: flutter --version
