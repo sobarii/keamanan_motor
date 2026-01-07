@@ -1,33 +1,42 @@
-name: Flutter iOS Build
+name: Flutter iOS Build (No Signing)
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build-ios:
+    # Menggunakan macOS terbaru karena butuh Xcode untuk build iOS
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'  # Flutter terbaru + Dart terbaru
-
-      - run: flutter config --no-analytics
+          # Menggunakan channel stable agar mendapatkan Dart versi terbaru (saat ini > 3.10)
+          channel: 'stable'
+          cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          # Masuk ke folder ios untuk install CocoaPods
+          cd ios
+          pod install
+          cd ..
 
-      - name: Build iOS release
-        run: flutter build ios --release
+      - name: Build iOS (No Codesign)
+        # --no-codesign melewati tahap pengecekan sertifikat Apple
+        run: flutter build ios --release --no-codesign
 
-      - name: Build IPA
-        run: flutter build ipa
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: ios-build
-          path: build/ios/ipa/*.ipa
+          name: ios-build-files
+          # Mengunggah hasil build (berupa folder .app, bukan .ipa)
+          path: build/ios/iphoneos/Runner.app
